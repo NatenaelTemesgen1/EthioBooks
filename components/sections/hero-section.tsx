@@ -1,0 +1,119 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { UserPlus, ChevronDown } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+
+export function HeroSection() {
+  const [scrollY, setScrollY] = useState(0);
+  const [isVisible] = useState(true);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToNextSection = () => {
+    const heroHeight = window.innerHeight * 0.9;
+    window.scrollTo({
+      top: heroHeight,
+      behavior: 'smooth'
+    });
+  };
+
+  return (
+    <section className="relative min-h-[120vh] flex items-center justify-center overflow-hidden">
+      {/* Parallax Background */}
+      <div
+        className="absolute inset-0 z-0"
+        style={{
+          transform: `translateY(${scrollY * 0.4}px)`,
+        }}
+      >
+        <img
+          src="/images/library-hero.jpg"
+          alt="Grand library interior"
+          className="h-full w-full object-cover"
+        />
+        {/* Gradient Overlay */}
+        {/* <div className="absolute inset-0 bg-linear-to-b from-background/70 via-background/50 to-background" />
+        <div className="absolute inset-0 bg-linear-to-r from-background/60 via-transparent to-background/60" /> */}
+      </div>
+
+     
+
+      {/* Content */}
+      <div className="relative z-20 mx-auto max-w-4xl px-4 text-center">
+        <div
+          className={cn(
+            'transition-all duration-1000',
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+          )}
+        >
+          <h1 className="font-serif text-4xl font-bold text-foreground sm:text-5xl md:text-6xl lg:text-7xl">
+            <span className="text-balance">Discover Your Next</span>
+            <br />
+            <span className="text-accent">Favorite Book</span>
+          </h1>
+        </div>
+
+
+        <div
+          className={cn(
+            'mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row transition-all duration-1000 delay-400',
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+          )}
+        >
+          <Button size="lg" variant="outline" asChild className="group min-w-45">
+            <Link href="/register" className="flex items-center gap-2">
+              <UserPlus className="h-5 w-5 transition-transform group-hover:scale-110" />
+              Create Account
+            </Link>
+          </Button>
+          <Button size="lg" variant="outline" asChild className="group min-w-45">
+            <Link href="/books" className="flex items-center gap-2">
+             
+              Explore Books
+            </Link>
+          </Button>
+        </div>
+
+        {/* Stats */}
+        <div
+          className={cn(
+            'mt-16 grid grid-cols-3 gap-4 sm:gap-8 transition-all duration-1000 delay-600',
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+          )}
+        >
+          {[
+            { value: '10K+', label: 'Books' },
+            { value: '50K+', label: 'Reviews' },
+            { value: '25K+', label: 'Readers' },
+          ].map((stat) => (
+            <div key={stat.label} className="text-center">
+              <p className="font-serif text-2xl font-bold text-accent sm:text-3xl">
+                {stat.value}
+              </p>
+              <p className="text-sm text-muted-foreground">{stat.label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Scroll Indicator */}
+      <button 
+        onClick={scrollToNextSection}
+        className="absolute bottom-8 left-1/2 z-20 -translate-x-1/2 animate-bounce cursor-pointer transition-colors hover:text-accent"
+        aria-label="Scroll to next section"
+      >
+        <ChevronDown className="h-8 w-8 text-accent/60 hover:text-accent" />
+      </button>
+    </section>
+  );
+}
