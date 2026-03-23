@@ -46,6 +46,7 @@ export default function AdminBooksPage() {
     description: '',
     categoryId: '',
     coverImage: '',
+    fileUrl: '',
     publishedYear: '',
     pages: '',
   });
@@ -84,6 +85,7 @@ export default function AdminBooksPage() {
       description: '',
       categoryId: categories[0]?.id ?? '',
       coverImage: '',
+      fileUrl: '',
       publishedYear: '',
       pages: '',
     });
@@ -98,6 +100,7 @@ export default function AdminBooksPage() {
       description: b.description ?? '',
       categoryId: b.categoryId ?? '',
       coverImage: b.coverImage ?? '',
+      fileUrl: b.fileUrl ?? '',
       publishedYear: b.publishedYear ? String(b.publishedYear) : '',
       pages: b.pages ? String(b.pages) : '',
     });
@@ -113,6 +116,7 @@ export default function AdminBooksPage() {
         description: form.description,
         categoryId: form.categoryId,
         coverImage: form.coverImage || undefined,
+        fileUrl: form.fileUrl || undefined,
         publishedYear: form.publishedYear ? Number(form.publishedYear) : undefined,
         pages: form.pages ? Number(form.pages) : undefined,
       };
@@ -136,6 +140,20 @@ export default function AdminBooksPage() {
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data?.message ?? 'Upload failed');
       setForm((f) => ({ ...f, coverImage: data.url ?? '' }));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Upload failed');
+    }
+  };
+
+  const uploadBookFile = async (file: File) => {
+    setError(null);
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      const res = await fetch('/api/upload/book', { method: 'POST', body: fd });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.message ?? 'Upload failed');
+      setForm((f) => ({ ...f, fileUrl: data.url ?? '' }));
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Upload failed');
     }
@@ -183,12 +201,21 @@ export default function AdminBooksPage() {
             <Input placeholder="Title" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
             <Input placeholder="Author" value={form.author} onChange={(e) => setForm({ ...form, author: e.target.value })} />
             <Input placeholder="Cover image URL (optional)" value={form.coverImage} onChange={(e) => setForm({ ...form, coverImage: e.target.value })} />
+            <Input placeholder="Book file URL (optional)" value={form.fileUrl} onChange={(e) => setForm({ ...form, fileUrl: e.target.value })} />
             <Input
               type="file"
               accept="image/*"
               onChange={(e) => {
                 const file = e.target.files?.[0];
                 if (file) void uploadCover(file);
+              }}
+            />
+            <Input
+              type="file"
+              accept=".pdf,.epub,.txt,.doc,.docx,.rtf,.mobi,application/pdf,application/epub+zip,text/plain"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) void uploadBookFile(file);
               }}
             />
             <Input placeholder="Published year (optional)" value={form.publishedYear} onChange={(e) => setForm({ ...form, publishedYear: e.target.value })} />

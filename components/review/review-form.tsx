@@ -97,7 +97,7 @@ export function ReviewForm({ bookId, onSubmit }: ReviewFormProps) {
           value={comment}
           onChange={(e) => setComment(e.target.value)}
           placeholder="What did you think about this book?"
-          className="mt-2 min-h-[120px] resize-none"
+          className="mt-2 min-h-30 resize-none"
         />
       </div>
 

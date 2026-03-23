@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Search, SlidersHorizontal, X, Grid3X3, List } from 'lucide-react';
 import { Navbar } from '@/components/layout/navbar';
 import { Footer } from '@/components/layout/footer';
@@ -22,6 +23,7 @@ type SortOption = 'rating' | 'reviews' | 'title' | 'year';
 type ViewMode = 'grid' | 'list';
 
 export default function BooksPage() {
+  const searchParams = useSearchParams();
   const [books, setBooks] = useState<Book[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -32,6 +34,10 @@ export default function BooksPage() {
   const [minRating, setMinRating] = useState<number>(0);
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [showFilters, setShowFilters] = useState(false);
+
+  useEffect(() => {
+    setSearchQuery(searchParams.get('search') ?? '');
+  }, [searchParams]);
 
   useEffect(() => {
     // Backend enforces max limit 50 via validation
@@ -182,7 +188,7 @@ export default function BooksPage() {
 
               {/* Sort */}
               <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortOption)}>
-                <SelectTrigger className="w-[160px]">
+                <SelectTrigger className="w-40">
                   <SelectValue placeholder="Sort by" />
                 </SelectTrigger>
                 <SelectContent>
@@ -228,7 +234,7 @@ export default function BooksPage() {
             <div className="mb-8 rounded-xl border border-border bg-card p-6">
               <div className="flex flex-wrap items-end gap-6">
                 {/* Category Filter */}
-                <div className="min-w-[200px] flex-1">
+                <div className="min-w-50 flex-1">
                   <label className="mb-2 block text-sm font-medium text-foreground">
                     Category
                   </label>
@@ -251,7 +257,7 @@ export default function BooksPage() {
                 </div>
 
                 {/* Minimum Rating Filter */}
-                <div className="min-w-[200px] flex-1">
+                <div className="min-w-50 flex-1">
                   <label className="mb-2 block text-sm font-medium text-foreground">
                     Minimum Rating
                   </label>

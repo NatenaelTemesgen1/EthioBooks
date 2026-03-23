@@ -2,6 +2,26 @@ import { Request, Response } from 'express';
 import * as userService from '../services/userService';
 import { asyncHandler } from '../utils/asyncHandler';
 
+// ✅ NEW: Upload Avatar
+export const uploadAvatar = asyncHandler(async (req: Request, res: Response) => {
+  const userId = req.user!.userId;
+
+  if (!req.file) {
+    res.status(400).json({ message: 'No file uploaded' });
+    return;
+  }
+
+  const avatarUrl = `/uploads/${req.file.filename}`;
+
+  const user = await userService.updateMe(userId, {
+    avatar: avatarUrl,
+  });
+
+  res.json(user);
+});
+
+// ---------------- EXISTING ----------------
+
 export const getUserById = asyncHandler(async (req: Request, res: Response) => {
   const user = await userService.getUserById(req.params.id);
   res.json(user);

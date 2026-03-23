@@ -6,9 +6,9 @@ import { Button } from '@/components/ui/button';
 
 const stats = [
   { value: '10,000+', label: 'Books', icon: BookOpen },
-  { value: '50,000+', label: 'Reviews', icon: MessageSquare },
-  { value: '25,000+', label: 'Readers', icon: Users },
-  { value: '150+', label: 'Countries', icon: Globe },
+  { value: '50,000+', label: 'Readers', icon: Users },
+  { value: '15,000+', label: 'Reviews', icon: MessageSquare },
+  { value: '250+', label: 'Countries', icon: Globe },
 ];
 
 const values = [

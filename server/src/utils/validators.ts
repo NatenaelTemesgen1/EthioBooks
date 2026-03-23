@@ -16,7 +16,8 @@ export const createBookSchema = z.object({
   author: z.string().min(1, 'Author required'),
   description: z.string(),
   categoryId: z.string().min(1, 'Category required'),
-  coverImage: z.union([z.string().url(), z.literal('')]).optional(),
+  coverImage: z.string().optional(),
+  fileUrl: z.string().optional(),
   publishedYear: z.coerce.number().int().min(1).max(2100).optional(),
   pages: z.coerce.number().int().min(1).optional(),
 });
@@ -50,7 +51,7 @@ export const booksQuerySchema = z.object({
 export const updateMeSchema = z.object({
   name: z.string().min(2).optional(),
   email: z.string().email().optional(),
-  avatar: z.union([z.string().url(), z.literal('')]).optional(),
+  avatar: z.string().optional(), // Allow any string (relative path is fine)
 });
 
 export const forgotPasswordSchema = z.object({

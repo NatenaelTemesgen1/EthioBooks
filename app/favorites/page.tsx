@@ -1,20 +1,39 @@
+'use client';
+
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import { Navbar } from '@/components/layout/navbar';
 import { Footer } from '@/components/layout/footer';
 import { BookCard } from '@/components/book/book-card';
 import { Button } from '@/components/ui/button';
 import { getMyFavorites } from '@/lib/api';
+import type { Book } from '@/lib/types';
 
-export const dynamic = 'force-dynamic';
+export default function FavoritesPage() {
+  const [books, setBooks] = useState<Book[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
-export default async function FavoritesPage() {
-  let books: any[] = [];
-  let error: string | null = null;
-  try {
-    books = await getMyFavorites();
-  } catch (e) {
-    error = e instanceof Error ? e.message : 'Failed to load favorites';
-  }
+  useEffect(() => {
+    let cancelled = false;
+    getMyFavorites()
+      .then((items) => {
+        if (cancelled) return;
+        setBooks(items);
+      })
+      .catch((e) => {
+        if (cancelled) return;
+        setError(e instanceof Error ? e.message : 'Failed to load favorites');
+      })
+      .finally(() => {
+        if (cancelled) return;
+        setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return (
     <div className="min-h-screen">
@@ -31,7 +50,9 @@ export default async function FavoritesPage() {
             </Button>
           </div>
 
-          {error ? (
+          {loading ? (
+            <p className="text-muted-foreground">Loading favorites...</p>
+          ) : error ? (
             <p className="text-sm text-destructive">{error}</p>
           ) : books.length > 0 ? (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

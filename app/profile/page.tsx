@@ -1,13 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { Navbar } from '@/components/layout/navbar';
 import { Footer } from '@/components/layout/footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import type { User } from '@/lib/types';
-import { getMeProfile, updateMeProfile } from '@/lib/api';
+import type { Book, User } from '@/lib/types';
+import { getMeProfile, getMyFavorites, updateMeProfile } from '@/lib/api';
 
 export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
@@ -17,6 +18,8 @@ export default function ProfilePage() {
   const [email, setEmail] = useState('');
   const [avatar, setAvatar] = useState('');
   const [saving, setSaving] = useState(false);
+  const [avatarTimestamp, setAvatarTimestamp] = useState(Date.now());
+  const [favorites, setFavorites] = useState<Book[]>([]);
 
   useEffect(() => {
     let cancelled = false;
@@ -27,9 +30,21 @@ export default function ProfilePage() {
         setName(u.name ?? '');
         setEmail(u.email ?? '');
         setAvatar(u.avatar ?? '');
+        setAvatarTimestamp(Date.now());
       })
       .catch((e) => setError(e instanceof Error ? e.message : 'Failed to load profile'))
       .finally(() => setLoading(false));
+
+    getMyFavorites()
+      .then((items) => {
+        if (cancelled) return;
+        setFavorites(items);
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setFavorites([]);
+      });
+
     return () => {
       cancelled = true;
     };
@@ -44,6 +59,7 @@ export default function ProfilePage() {
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data?.message ?? 'Upload failed');
       setAvatar(data.url ?? '');
+      setAvatarTimestamp(Date.now());
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Upload failed');
     }
@@ -55,6 +71,11 @@ export default function ProfilePage() {
     try {
       const updated = await updateMeProfile({ name, email, avatar });
       setUser(updated);
+      if (updated.avatar !== avatar) {
+        setAvatar(updated.avatar);
+        setAvatarTimestamp(Date.now());
+      }
+      window.dispatchEvent(new Event('ethiobooks:user-updated'));
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Save failed');
     } finally {
@@ -83,39 +104,62 @@ export default function ProfilePage() {
           {error && <p className="text-sm text-destructive">{error}</p>}
 
           {!loading && user && (
-            <div className="rounded-xl border border-border bg-card p-6 space-y-5">
-              <div className="flex items-center gap-4">
-                <Avatar className="h-14 w-14">
-                  <AvatarImage src={avatar} alt={user.name} />
-                  <AvatarFallback>{initials}</AvatarFallback>
-                </Avatar>
-                <div className="space-y-2">
-                  <Input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) void uploadAvatar(file);
-                    }}
-                  />
+            <>
+              <div className="rounded-xl border border-border bg-card p-6 space-y-5">
+                <div className="flex items-center gap-4">
+                  <Avatar className="h-14 w-14">
+                    {/* Add timestamp to force refresh */}
+                    <AvatarImage src={avatar ? `${avatar}?t=${avatarTimestamp}` : ''} alt={user.name} />
+                    <AvatarFallback>{initials}</AvatarFallback>
+                  </Avatar>
+                  <div className="space-y-2">
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) void uploadAvatar(file);
+                      }}
+                    />
+                  </div>
                 </div>
+
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium">Name</p>
+                    <Input value={name} onChange={(e) => setName(e.target.value)} />
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium">Email</p>
+                    <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                  </div>
+                </div>
+
+                <Button onClick={save} disabled={saving}>
+                  {saving ? 'Saving...' : 'Save changes'}
+                </Button>
               </div>
 
-              <div className="grid gap-3 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <p className="text-sm font-medium">Name</p>
-                  <Input value={name} onChange={(e) => setName(e.target.value)} />
+              <div className="rounded-xl border border-border bg-card p-6 space-y-4">
+                <div className="flex items-center justify-between">
+                  <h2 className="font-serif text-xl font-semibold text-foreground">My Favorites</h2>
+                  <Button variant="outline" asChild>
+                    <Link href="/favorites">Open Favorites</Link>
+                  </Button>
                 </div>
-                <div className="space-y-2">
-                  <p className="text-sm font-medium">Email</p>
-                  <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                </div>
+                {favorites.length > 0 ? (
+                  <ul className="space-y-2">
+                    {favorites.slice(0, 4).map((book) => (
+                      <li key={book.id} className="text-sm text-muted-foreground">
+                        - {book.title} by {book.author}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-sm text-muted-foreground">No favorites yet. Add some books to favorites.</p>
+                )}
               </div>
-
-              <Button onClick={save} disabled={saving}>
-                {saving ? 'Saving...' : 'Save changes'}
-              </Button>
-            </div>
+            </>
           )}
         </div>
       </main>
@@ -123,4 +167,3 @@ export default function ProfilePage() {
     </div>
   );
 }
-

@@ -4,6 +4,7 @@ export interface Book {
   author: string;
   description: string;
   coverImage: string;
+  fileUrl?: string;
   categoryId: string;
   category: Category;
   averageRating: number;

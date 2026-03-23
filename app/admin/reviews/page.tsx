@@ -147,11 +147,13 @@ export default function AdminReviewsPage() {
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
-                      <img
-                        src={review.book?.coverImage}
-                        alt={review.book?.title}
-                        className="h-10 w-7 rounded object-cover"
-                      />
+                    {review.book?.coverImage && (
+  <img
+    src={review.book.coverImage}
+    alt={review.book?.title}
+    className="h-10 w-7 rounded object-cover"
+  />
+)}
                       <span className="max-w-37.5 truncate">{review.book?.title}</span>
                     </div>
                   </TableCell>

@@ -48,6 +48,7 @@ model Book {
   category      BookCategory @relation(fields: [categoryId], references: [id], onDelete: Restrict)
   reviews       Review[]
   favorites     Favorite[]
+  fileUrl String?
 }
 
 model Review {

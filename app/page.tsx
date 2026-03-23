@@ -20,8 +20,8 @@ export default function HomePage() {
         <CategoriesSection />
         <LatestReviewsSection />
         <TestimonialsSection />
-        <AboutSection />
         <CtaSection />
+        <AboutSection />
       </main>
       <Footer />
     </div>

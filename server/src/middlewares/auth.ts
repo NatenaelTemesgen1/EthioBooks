@@ -25,7 +25,7 @@ export function authMiddleware(req: Request, _res: Response, next: NextFunction)
   const token = bearer ?? cookieToken ?? null;
 
   if (!token) {
-    next(new ApiError('Authentication required', 401));
+    next(new ApiError('Please Sign In Or Create An Account', 401));
     return;
   }
 

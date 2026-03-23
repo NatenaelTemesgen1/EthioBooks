@@ -51,6 +51,7 @@ export interface CreateBookInput {
   description: string;
   categoryId: string;
   coverImage?: string;
+  fileUrl?: string;
   publishedYear?: number;
   pages?: number;
 }

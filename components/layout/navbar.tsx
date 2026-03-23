@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { 
   Search, 
   Menu, 
@@ -13,7 +13,9 @@ import {
   Settings,
   LogOut,
   Heart,
-  LayoutDashboard
+  LayoutDashboard,
+  Sun,
+  Moon // 👈 Added Lucide icons for dark mode
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -35,32 +37,82 @@ const navLinks = [
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [isDarkMode, setIsDarkMode] = useState(false); // 👈 State for theme
   const pathname = usePathname();
+  const router = useRouter();
+
+  // 👈 Effect to sync theme with system/local storage and the HTML tag
+  useEffect(() => {
+    const theme = localStorage.getItem('theme');
+    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    if (theme === 'dark' || (!theme && systemTheme)) {
+      document.documentElement.classList.add('dark');
+      setIsDarkMode(true);
+    } else {
+      document.documentElement.classList.remove('dark');
+      setIsDarkMode(false);
+    }
+  }, []);
+
+  const toggleDarkMode = () => {
+    if (isDarkMode) {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+      setIsDarkMode(false);
+    } else {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+      setIsDarkMode(true);
+    }
+  };
+
+  const runSearch = () => {
+    const q = searchQuery.trim();
+    if (!q) {
+      router.push('/books');
+      return;
+    }
+    router.push(`/books?search=${encodeURIComponent(q)}`);
+    setIsSearchOpen(false);
+    setIsOpen(false);
+  };
 
   useEffect(() => {
     let cancelled = false;
-    (async () => {
+    const syncUser = async () => {
       try {
         const { getMe } = await import('@/lib/api/authApi');
         const res = await getMe();
         if (cancelled) return;
+        setUser(res.user);
         setIsLoggedIn(true);
         setIsAdmin(res?.user?.role === 'admin');
       } catch {
         if (cancelled) return;
+        setUser(null);
         setIsLoggedIn(false);
         setIsAdmin(false);
       }
-    })();
+    };
+
+    void syncUser();
+    const onUserUpdated = () => {
+      void syncUser();
+    };
+    window.addEventListener('ethiobooks:user-updated', onUserUpdated);
     return () => {
       cancelled = true;
+      window.removeEventListener('ethiobooks:user-updated', onUserUpdated);
     };
   }, [pathname]);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-xl supports-backdrop-filter:bg-background/60">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 transition-transform hover:scale-105">
@@ -95,6 +147,17 @@ export function Navbar() {
 
         {/* Right Section */}
         <div className="flex items-center gap-2">
+          {/* 👈 Desktop Theme Toggle Toggle */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleDarkMode}
+            className="h-9 w-9 hidden sm:inline-flex"
+            aria-label="Toggle theme"
+          >
+            {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          </Button>
+
           {/* Search */}
           <div className="relative hidden sm:block">
             {isSearchOpen ? (
@@ -102,10 +165,22 @@ export function Navbar() {
                 <input
                   type="text"
                   placeholder="Search books..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') runSearch();
+                  }}
                   className="h-9 w-48 rounded-lg border border-input bg-background px-3 text-sm outline-none ring-ring transition-all focus:ring-2 lg:w-64"
                   autoFocus
-                  onBlur={() => setIsSearchOpen(false)}
                 />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-9 w-9"
+                  onClick={runSearch}
+                >
+                  <Search className="h-4 w-4" />
+                </Button>
                 <Button
                   variant="ghost"
                   size="icon"
@@ -134,7 +209,13 @@ export function Navbar() {
                 <Button variant="ghost" className="flex items-center gap-2">
                   <div className="h-8 w-8 overflow-hidden rounded-full bg-muted">
                     <img
-                      src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop"
+                      src={
+                        user?.avatar
+                          ? user.avatar.startsWith('http')
+                            ? user.avatar
+                            : user.avatar
+                          : 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop'
+                      }
                       alt="User avatar"
                       className="h-full w-full object-cover"
                     />
@@ -225,9 +306,17 @@ export function Navbar() {
                 <input
                   type="text"
                   placeholder="Search books..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') runSearch();
+                  }}
                   className="h-10 w-full rounded-lg border border-input bg-background pl-10 pr-4 text-sm outline-none ring-ring transition-all focus:ring-2"
                 />
               </div>
+              <Button variant="outline" className="mt-2 w-full" onClick={runSearch}>
+                Search
+              </Button>
             </div>
 
             {navLinks.map((link) => (
@@ -245,6 +334,16 @@ export function Navbar() {
                 {link.label}
               </Link>
             ))}
+
+            {/* 👈 Mobile Theme Toggle */}
+            <Button
+              variant="outline"
+              className="mt-2 flex items-center justify-center gap-2"
+              onClick={toggleDarkMode}
+            >
+              {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+              {isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            </Button>
 
             {!isLoggedIn && (
               <div className="mt-4 flex flex-col gap-2 border-t border-border pt-4">

@@ -29,24 +29,25 @@ export function HeroSection() {
 
   return (
     <section className="relative min-h-[120vh] flex items-center justify-center overflow-hidden">
-      {/* Parallax Background */}
+      {/* Video Background */}
       <div
         className="absolute inset-0 z-0"
         style={{
           transform: `translateY(${scrollY * 0.4}px)`,
         }}
       >
-        <img
-          src="/images/library-hero.jpg"
-          alt="Grand library interior"
+        <video
+          src="/images/188710-883612324_medium.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
           className="h-full w-full object-cover"
         />
-        {/* Gradient Overlay */}
+        {/* Optional Gradient Overlay */}
         {/* <div className="absolute inset-0 bg-linear-to-b from-background/70 via-background/50 to-background" />
         <div className="absolute inset-0 bg-linear-to-r from-background/60 via-transparent to-background/60" /> */}
       </div>
-
-     
 
       {/* Content */}
       <div className="relative z-20 mx-auto max-w-4xl px-4 text-center">
@@ -57,12 +58,11 @@ export function HeroSection() {
           )}
         >
           <h1 className="font-serif text-4xl font-bold text-foreground sm:text-5xl md:text-6xl lg:text-7xl">
-            <span className="text-balance">Discover Your Next</span>
+            <span className="text-accent">Discover Your Next</span>
             <br />
             <span className="text-accent">Favorite Book</span>
           </h1>
         </div>
-
 
         <div
           className={cn(
@@ -78,7 +78,6 @@ export function HeroSection() {
           </Button>
           <Button size="lg" variant="outline" asChild className="group min-w-45">
             <Link href="/books" className="flex items-center gap-2">
-             
               Explore Books
             </Link>
           </Button>
@@ -91,8 +90,7 @@ export function HeroSection() {
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           )}
         >
-          {[
-            { value: '10K+', label: 'Books' },
+          {[{ value: '10K+', label: 'Books' },
             { value: '50K+', label: 'Reviews' },
             { value: '25K+', label: 'Readers' },
           ].map((stat) => (

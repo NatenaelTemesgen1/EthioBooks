@@ -107,6 +107,7 @@ export async function createBook(data: {
   description: string;
   categoryId: string;
   coverImage?: string;
+  fileUrl?: string;
   publishedYear?: number;
   pages?: number;
 }) {
@@ -120,6 +121,7 @@ export async function createBook(data: {
       description: data.description,
       categoryId: data.categoryId,
       coverImage: data.coverImage ?? null,
+      fileUrl: data.fileUrl ?? null,
       publishedYear: data.publishedYear ?? null,
       pages: data.pages ?? null,
     },
@@ -136,6 +138,7 @@ export async function updateBook(
     description: string;
     categoryId: string;
     coverImage: string;
+    fileUrl: string;
     publishedYear: number;
     pages: number;
   }>
@@ -155,6 +158,7 @@ export async function updateBook(
       ...(data.description != null && { description: data.description }),
       ...(data.categoryId != null && { categoryId: data.categoryId }),
       ...(data.coverImage != null && { coverImage: data.coverImage }),
+      ...(data.fileUrl != null && { fileUrl: data.fileUrl }),
       ...(data.publishedYear != null && { publishedYear: data.publishedYear }),
       ...(data.pages != null && { pages: data.pages }),
     },
@@ -207,6 +211,7 @@ function toBookResponse(
     author: string;
     description: string;
     coverImage: string | null;
+    fileUrl: string | null;
     publishedYear: number | null;
     pages: number | null;
     categoryId: string;
@@ -221,6 +226,7 @@ function toBookResponse(
     author: book.author,
     description: book.description,
     coverImage: book.coverImage ?? 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=600&fit=crop',
+    fileUrl: book.fileUrl ?? '',
     categoryId: book.categoryId,
     category: {
       id: book.category.id,

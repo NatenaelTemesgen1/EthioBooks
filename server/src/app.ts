@@ -7,7 +7,6 @@ import routes from './routes';
 import { errorHandler } from './middlewares/errorHandler';
 import { env } from './config/env';
 import { ensureXsrfCookie, requireCsrfForCookieAuth } from './middlewares/csrf';
-
 const app = express();
 
 app.set('trust proxy', 1);
@@ -30,11 +29,10 @@ app.use(rateLimit({
 
 app.use(cookieParser());
 app.use(express.json());
-
+app.use("/uploads", express.static("uploads"));
 // CSRF protection for cookie-authenticated requests
 app.use(ensureXsrfCookie);
 app.use(requireCsrfForCookieAuth);
-
 app.use('/api', routes);
 
 app.use(errorHandler);

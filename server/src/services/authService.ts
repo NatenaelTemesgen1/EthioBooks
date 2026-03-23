@@ -4,6 +4,7 @@ import crypto from 'crypto';
 import { prisma } from '../prisma';
 import { ApiError } from '../utils/ApiError';
 import type { JwtPayload } from '../middlewares/auth';
+import { sendPasswordResetEmail } from '../utils/email';
 
 const SALT_ROUNDS = 10;
 
@@ -47,7 +48,7 @@ export async function login(email: string, password: string) {
 export async function forgotPassword(email: string) {
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user) {
-    return { success: true };
+    return { success: true }; // No token returned
   }
 
   const rawToken = crypto.randomBytes(32).toString('hex');
@@ -62,10 +63,15 @@ export async function forgotPassword(email: string) {
     },
   });
 
-  // Dev-friendly: return token so you can test reset flow without email service.
-  return { success: true, token: rawToken, expiresAt: expiresAt.toISOString() };
-}
+  try {
+    await sendPasswordResetEmail(email, rawToken);
+  } catch (err) {
+    console.error('Failed to send reset email:', err);
+  }
 
+  // In production, never return the token. Only return success.
+  return { success: true };
+}
 export async function resetPassword(token: string, newPassword: string) {
   const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
   const now = new Date();

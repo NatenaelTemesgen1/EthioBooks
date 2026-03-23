@@ -73,13 +73,28 @@ export default async function BookDetailsPage({
                   <img
                     src={book.coverImage}
                     alt={`Cover of ${book.title}`}
-                    className="aspect-[2/3] w-full object-cover"
+                    className="aspect-2/3 w-full object-cover"
                   />
                 </div>
 
                 {/* Action Buttons */}
                 <div className="mt-6 flex gap-3">
                   <FavoriteButton bookId={book.id} />
+                  {book.fileUrl ? (
+                    <>
+                      <Button asChild variant="secondary">
+                        <a href={book.fileUrl} target="_blank" rel="noreferrer">
+                          <BookOpen className="mr-2 h-4 w-4" />
+                          Read
+                        </a>
+                      </Button>
+                      <Button asChild variant="outline">
+                        <a href={book.fileUrl} download>
+                          Download
+                        </a>
+                      </Button>
+                    </>
+                  ) : null}
                   <Button variant="outline" size="icon">
                     <Share2 className="h-4 w-4" />
                   </Button>
@@ -154,8 +169,25 @@ export default async function BookDetailsPage({
                   {book.description}
                 </p>
               </div>
+{/* this is the preview for the books */}
+              {/* {book.fileUrl?.toLowerCase().endsWith('.pdf') ? (
+                <>
+                  <Separator className="my-8" />
+                  <div>
+                    <h2 className="font-serif text-xl font-semibold text-foreground">Preview</h2>
+                    <p className="mt-2 text-sm text-muted-foreground">
+                      You can preview this PDF directly here.
+                    </p>
+                    <iframe
+                      src={book.fileUrl}
+                      title={`${book.title} preview`}
+                      className="mt-4 h-[640px] w-full rounded-xl border border-border"
+                    />
+                  </div>
+                </>
+              ) : null}
 
-              <Separator className="my-8" />
+              <Separator className="my-8" /> */}
 
               {/* Reviews Section */}
               <div>

@@ -171,7 +171,7 @@ export default function LoginPage() {
               alt="Library books"
               className="h-full w-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-t from-background/80 via-background/20 to-transparent" />
             <div className="absolute bottom-0 left-0 right-0 p-12">
               <blockquote className="text-xl font-medium text-foreground">
                 &ldquo;A reader lives a thousand lives before he dies. The man who never reads lives only one.&rdquo;

@@ -48,26 +48,24 @@ export function ReviewCard({ review, showBookInfo = false, className }: ReviewCa
           <RatingStars rating={review.rating} size="sm" className="mt-1" />
         </div>
       </div>
-
-      {/* Book Info (optional) */}
-      {showBookInfo && review.book && (
-        <Link
-          href={`/books/${review.book.id}`}
-          className="mt-4 flex items-center gap-3 rounded-lg bg-muted/50 p-3 transition-colors hover:bg-muted"
-        >
-          <img
-            src={review.book.coverImage}
-            alt={review.book.title}
-            className="h-14 w-10 rounded object-cover"
-          />
-          <div className="min-w-0">
-            <p className="font-serif font-medium text-foreground line-clamp-1">
-              {review.book.title}
-            </p>
-            <p className="text-sm text-muted-foreground">by {review.book.author}</p>
-          </div>
-        </Link>
-      )}
+{showBookInfo && review.book && (
+  <Link
+    href={`/books/${review.book.id}`}
+    className="mt-4 flex items-center gap-3 rounded-lg bg-muted/50 p-3 transition-colors hover:bg-muted"
+  >
+    <img
+      src={review.book.coverImage || '/images/placeholder-book-cover.jpg'}
+      alt={review.book.title}
+      className="h-14 w-10 rounded object-cover"
+    />
+    <div className="min-w-0">
+      <p className="font-serif font-medium text-foreground line-clamp-1">
+        {review.book.title}
+      </p>
+      <p className="text-sm text-muted-foreground">by {review.book.author}</p>
+    </div>
+  </Link>
+)}
 
       {/* Comment */}
       <p className="mt-4 text-sm text-muted-foreground leading-relaxed line-clamp-4">
