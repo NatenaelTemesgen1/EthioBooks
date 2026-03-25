@@ -49,7 +49,7 @@ export default async function CategoriesPage() {
                   )}
                 >
                   {/* Background Gradient */}
-                  <div className="pointer-events-none absolute -inset-px rounded-xl bg-gradient-to-br from-accent/10 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                  <div className="pointer-events-none absolute -inset-px rounded-xl bg-linear-to-br from-accent/10 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 
                   <div className="relative">
                     {/* Icon */}

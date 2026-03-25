@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { BookOpen, Users, Star, MessageSquare, Heart, Globe } from 'lucide-react';
+import { BookOpen, Users, Star, MessageSquare, Heart, Globe, UserPlus } from 'lucide-react';
 import { Navbar } from '@/components/layout/navbar';
 import { Footer } from '@/components/layout/footer';
 import { Button } from '@/components/ui/button';
@@ -36,21 +36,21 @@ const values = [
 
 const team = [
   {
-    name: 'Sarah Mitchell',
+    name: 'Yohannes Melakamu',
     role: 'Founder & CEO',
-    image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&h=300&fit=crop',
+    image: '/photo_2026-03-24_08-16-56.jpg',
     bio: 'Former librarian with a passion for connecting readers with their perfect books.',
   },
   {
-    name: 'David Chen',
+    name: 'Biniyam Molla',
     role: 'Head of Product',
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop',
+    image: '/photo_2026-03-24_08-05-57.jpg',
     bio: 'Tech enthusiast who believes in building products that bring joy to users.',
   },
   {
-    name: 'Emily Rodriguez',
+    name: 'Biruk Eshetie',
     role: 'Community Manager',
-    image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&h=300&fit=crop',
+    image: '/photo_2026-03-24_08-07-17.jpg',
     bio: 'Book club organizer turned community builder, fostering reader connections.',
   },
 ];
@@ -124,14 +124,14 @@ export default function AboutPage() {
               <div className="relative">
                 <div className="aspect-4/3 overflow-hidden rounded-2xl">
                   <img
-                    src="https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=800&h=600&fit=crop"
+                    src="https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=800&h=600&fit=cro"
                     alt="Library interior"
                     className="h-full w-full object-cover"
                   />
                 </div>
                 <div className="absolute -bottom-6 -left-6 aspect-square w-48 overflow-hidden rounded-2xl border-4 border-background shadow-lg">
                   <img
-                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop"
+                    src="\uploads\photo_2026-03-24_08-01-00.jpg"
                     alt="Person reading"
                     className="h-full w-full object-cover"
                   />
@@ -215,39 +215,100 @@ export default function AboutPage() {
         </section>
 
         {/* CTA */}
-        <section className="py-16 sm:py-24">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="rounded-2xl bg-primary px-6 py-16 text-center sm:px-12 lg:px-20">
-              <h2 className="font-serif text-3xl font-bold text-primary-foreground sm:text-4xl">
-                Join Our Community
-              </h2>
-              <p className="mx-auto mt-4 max-w-2xl text-lg text-primary-foreground/80">
-                Become part of a global community of book lovers. Share reviews, 
-                discover new reads, and connect with fellow readers.
-              </p>
-              <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                <Button
-                  size="lg"
-                  variant="secondary"
-                  asChild
-                  className="bg-background text-foreground hover:bg-background/90"
-                >
-                  <Link href="/register">Create Free Account</Link>
-                </Button>
-                <Button
-                  size="lg"
-                  variant="secondary"
-                  asChild
-                  className="bg-background text-foreground hover:bg-background/90"
-                >
-                  <Link href="/books">Browse Books</Link>
-                </Button>
-              </div>
-            </div>
+       <section className="relative py-28">
+
+      {/* Top Curve */}
+      <div className="absolute -top-16 left-0 w-full overflow-hidden leading-0">
+        <svg
+          className="relative block w-full h-16"
+          viewBox="0 0 1440 100"
+          preserveAspectRatio="none"
+        >
+          <path
+            d="M0,40C240,80 480,0 720,20C960,40 1200,80 1440,40L1440,0L0,0Z"
+            className="fill-background"
+          />
+        </svg>
+      </div>
+
+      <div className="mx-auto max-w-6xl px-6">
+
+        {/* CTA Container */}
+        <div className="relative overflow-hidden rounded-3xl border border-border/60 bg-linear-to-br from-emerald-500/10 via-background to-indigo-500/10 px-10 py-20 text-center shadow-xl">
+
+          {/* Background Glow */}
+          <div className="pointer-events-none absolute inset-0">
+            <div className="absolute left-1/4 top-0 h-72 w-72 rounded-full bg-emerald-400/20 blur-3xl" />
+            <div className="absolute right-1/4 bottom-0 h-72 w-72 rounded-full bg-indigo-400/20 blur-3xl" />
           </div>
-        </section>
+
+          {/* Content */}
+          <div className="relative">
+
+            <h2 className="font-serif text-4xl font-bold text-foreground sm:text-5xl lg:text-6xl">
+Join Our Community            </h2>
+
+            <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground leading-relaxed">
+              Become part of a global community of book lovers. Share reviews, 
+                discover new reads, and connect with fellow readers.
+            </p>
+
+            {/* Buttons */}
+            <div className="mt-12 flex flex-col items-center justify-center gap-5 sm:flex-row">
+
+              <Button
+                size="lg"
+                variant="secondary"
+                asChild
+                className="group min-w-45 rounded-full bg-emerald-500 text-white hover:bg-emerald-400 transition-all"
+              >
+                <Link href="/register" className="flex items-center gap-2">
+                  <UserPlus className="h-5 w-5 transition-transform group-hover:scale-110" />
+                Create Free Account
+                </Link>
+              </Button>
+
+              <Button
+                size="lg"
+                variant="secondary"
+                asChild
+                className="group min-w-45 rounded-full bg-background text-foreground hover:bg-muted transition-all"
+              >
+                <Link href="/books" className="flex items-center gap-2">
+                 Browse Books                
+   </Link>
+              </Button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
       </main>
       <Footer />
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                
+
+
+
+
+

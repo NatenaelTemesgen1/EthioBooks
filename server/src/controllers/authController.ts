@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import * as authService from '../services/authService';
+import * as userService from '../services/userService';  // ← ADD THIS
+
 import { asyncHandler } from '../utils/asyncHandler';
 import { accessTokenCookieOptions, clearAuthCookies } from '../utils/cookies';
 
@@ -17,10 +19,17 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
   res.json(result);
 });
 
+// ✅ FIXED: Return full user data from database, not just JWT payload
 export const me = asyncHandler(async (req: Request, res: Response) => {
-  // `authMiddleware` must run before this handler.
-  res.json({ user: req.user });
+  // Get user ID from authenticated token
+  const userId = req.user!.userId;
+  
+  // Fetch full user data from database (includes avatar)
+  const user = await userService.getUserById(userId);
+  
+  res.json({ user });
 });
+
 
 export const logout = asyncHandler(async (_req: Request, res: Response) => {
   clearAuthCookies(res);

@@ -12,8 +12,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/lib/utils';
-import { Navbar } from '@/components/layout/navbar';
-import { Footer } from '@/components/layout/footer';
+// import { Navbar } from '@/components/layout/navbar';
+// import { Footer } from '@/components/layout/footer';
 
 const registerSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -75,10 +75,10 @@ export default function RegisterPage() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <Navbar />
+      {/* <Navbar /> */}
       <main className="flex flex-1">
         {/* Left Side - Image */}
-        <div className="hidden lg:block lg:flex-1">
+        {/* <div className="hidden lg:block lg:flex-1">
           <div className="relative h-full">
             <img
               src="/images/register-library.jpg"
@@ -93,17 +93,17 @@ export default function RegisterPage() {
               <p className="mt-4 text-muted-foreground">- Joseph Addison</p>
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* Right Side - Form */}
         <div className="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:px-20 xl:px-24">
           <div className="mx-auto w-full max-w-sm">
             {/* Header */}
-            <Link href="/" className="flex items-center gap-2">
+            {/* <Link href="/" className="flex items-center gap-2">
               <span className="font-serif text-2xl font-bold text-foreground">
                 Ethio<span className="text-accent">Books</span>
               </span>
-            </Link>
+            </Link> */}
 
             <h1 className="mt-8 font-serif text-2xl font-bold text-foreground sm:text-3xl">
               Create your account
@@ -122,7 +122,7 @@ export default function RegisterPage() {
                   <Input
                     id="name"
                     type="text"
-                    placeholder="John Doe"
+                    placeholder="Name"
                     className={cn(
                       'pl-10',
                       errors.name && 'border-destructive focus-visible:ring-destructive'
@@ -143,7 +143,7 @@ export default function RegisterPage() {
                   <Input
                     id="email"
                     type="email"
-                    placeholder="you@example.com"
+                    placeholder="Email"
                     className={cn(
                       'pl-10',
                       errors.email && 'border-destructive focus-visible:ring-destructive'
@@ -272,7 +272,7 @@ export default function RegisterPage() {
           </div>
         </div>
       </main>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }

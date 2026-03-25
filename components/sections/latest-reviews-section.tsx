@@ -31,17 +31,18 @@ export async function LatestReviewsSection() {
             </p>
           </div>
 
-          <Button
-            variant="ghost"
-            asChild
-            className="group mt-6 sm:mt-0 rounded-full px-5"
-          >
-            <Link href="/reviews" className="flex items-center gap-2">
-              View All Reviews
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </Link>
-          </Button>
-
+          <div className="flex flex-col sm:flex-row sm:items-center">
+  <Button
+    variant="ghost"
+    asChild
+    className="group mt-6 sm:mt-0 sm:ml-auto rounded-full px-5"
+  >
+    <Link href="/reviews" className="flex items-center gap-2">
+      View All Reviews
+      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+    </Link>
+  </Button>
+</div>
         </div>
 
         {/* Reviews Grid */}

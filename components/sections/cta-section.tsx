@@ -7,7 +7,7 @@ export function CtaSection() {
     <section className="relative py-28">
 
       {/* Top Curve */}
-      <div className="absolute -top-16 left-0 w-full overflow-hidden leading-[0]">
+      <div className="absolute -top-16 left-0 w-full overflow-hidden leading-0">
         <svg
           className="relative block w-full h-16"
           viewBox="0 0 1440 100"
@@ -23,7 +23,7 @@ export function CtaSection() {
       <div className="mx-auto max-w-6xl px-6">
 
         {/* CTA Container */}
-        <div className="relative overflow-hidden rounded-3xl border border-border/60 bg-gradient-to-br from-emerald-500/10 via-background to-indigo-500/10 px-10 py-20 text-center shadow-xl">
+        <div className="relative overflow-hidden rounded-3xl border border-border/60 bg-linear-to-br from-emerald-500/10 via-background to-indigo-500/10 px-10 py-20 text-center shadow-xl">
 
           {/* Background Glow */}
           <div className="pointer-events-none absolute inset-0">

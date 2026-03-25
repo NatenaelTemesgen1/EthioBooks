@@ -53,7 +53,7 @@ export default function ForgotPasswordPage() {
           <div className="rounded-xl border border-border bg-card p-6 space-y-4">
             <Input
               type="email"
-              placeholder="you@example.com"
+              placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />

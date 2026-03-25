@@ -73,3 +73,4 @@ export function updateBook(id: string, data: Partial<CreateBookInput>): Promise<
 export function deleteBook(id: string): Promise<{ success: boolean }> {
   return apiRequest<{ success: boolean }>(`/books/${id}`, { method: 'DELETE' });
 }
+

@@ -13,7 +13,7 @@ model Role {
   users User[]
 }
 
-model User {
+model User {     git init  
   id        String   @id @default(cuid())
   name      String
   email     String   @unique

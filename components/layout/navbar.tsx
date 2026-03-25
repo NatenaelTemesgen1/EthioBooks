@@ -15,7 +15,7 @@ import {
   Heart,
   LayoutDashboard,
   Sun,
-  Moon // 👈 Added Lucide icons for dark mode
+  Moon
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -26,6 +26,18 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+
+// ✅ Define full user type
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  avatar: string;
+  role: 'admin' | 'user';
+  reviewCount: number;
+  favoriteBooks: string[];
+  joinedAt: string;
+}
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -40,12 +52,12 @@ export function Navbar() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [user, setUser] = useState<any>(null);
-  const [isDarkMode, setIsDarkMode] = useState(false); // 👈 State for theme
+  const [user, setUser] = useState<User | null>(null);  // ✅ Full user object
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
 
-  // 👈 Effect to sync theme with system/local storage and the HTML tag
+  // Dark mode effect
   useEffect(() => {
     const theme = localStorage.getItem('theme');
     const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -82,33 +94,54 @@ export function Navbar() {
     setIsOpen(false);
   };
 
-  useEffect(() => {
-    let cancelled = false;
-    const syncUser = async () => {
-      try {
-        const { getMe } = await import('@/lib/api/authApi');
-        const res = await getMe();
-        if (cancelled) return;
-        setUser(res.user);
+  // ✅ Sync user function - fetches FULL user data
+  const syncUser = async () => {
+    try {
+      const { getMe } = await import('@/lib/api/authApi');
+      const response = await getMe();
+      
+      if (response?.user) {
+        setUser(response.user);
         setIsLoggedIn(true);
-        setIsAdmin(res?.user?.role === 'admin');
-      } catch {
-        if (cancelled) return;
+        setIsAdmin(response.user.role === 'admin');
+      } else {
         setUser(null);
         setIsLoggedIn(false);
         setIsAdmin(false);
       }
-    };
+    } catch {
+      setUser(null);
+      setIsLoggedIn(false);
+      setIsAdmin(false);
+    }
+  };
 
-    void syncUser();
+  // ✅ Initial load and event listener
+  useEffect(() => {
+    let cancelled = false;
+    
+    const loadUser = async () => {
+      if (cancelled) return;
+      await syncUser();
+    };
+    
+    loadUser();
+    
+    // Listen for user update events (after profile edit, avatar upload)
     const onUserUpdated = () => {
-      void syncUser();
+      syncUser();
     };
     window.addEventListener('ethiobooks:user-updated', onUserUpdated);
+    
     return () => {
       cancelled = true;
       window.removeEventListener('ethiobooks:user-updated', onUserUpdated);
     };
+  }, []);
+
+  // ✅ Re-sync when pathname changes (after login/register redirect)
+  useEffect(() => {
+    syncUser();
   }, [pathname]);
 
   return (
@@ -147,7 +180,7 @@ export function Navbar() {
 
         {/* Right Section */}
         <div className="flex items-center gap-2">
-          {/* 👈 Desktop Theme Toggle Toggle */}
+          {/* Theme Toggle */}
           <Button
             variant="ghost"
             size="icon"
@@ -203,22 +236,27 @@ export function Navbar() {
           </div>
 
           {/* Auth Buttons / User Menu */}
-          {isLoggedIn ? (
+          {isLoggedIn && user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="flex items-center gap-2">
                   <div className="h-8 w-8 overflow-hidden rounded-full bg-muted">
-                    <img
-                      src={
-                        user?.avatar
-                          ? user.avatar.startsWith('http')
-                            ? user.avatar
-                            : user.avatar
-                          : 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop'
-                      }
-                      alt="User avatar"
-                      className="h-full w-full object-cover"
-                    />
+                    {user.avatar ? (
+                      <img
+                        src={user.avatar.startsWith('http') ? user.avatar : user.avatar}
+                        alt={user.name}
+                        className="h-full w-full object-cover"
+                        // ✅ Add timestamp to force refresh on image update
+                        onError={(e) => {
+                          // Fallback if image fails to load
+                          (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop';
+                        }}
+                      />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center bg-accent/20 text-accent">
+                        {user.name.charAt(0).toUpperCase()}
+                      </div>
+                    )}
                   </div>
                   <ChevronDown className="h-4 w-4" />
                 </Button>
@@ -259,6 +297,7 @@ export function Navbar() {
                       await logout();
                       setIsLoggedIn(false);
                       setIsAdmin(false);
+                      setUser(null);
                     } finally {
                       window.location.href = '/';
                     }
@@ -335,7 +374,7 @@ export function Navbar() {
               </Link>
             ))}
 
-            {/* 👈 Mobile Theme Toggle */}
+            {/* Mobile Theme Toggle */}
             <Button
               variant="outline"
               className="mt-2 flex items-center justify-center gap-2"

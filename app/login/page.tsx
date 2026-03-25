@@ -11,8 +11,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
-import { Navbar } from '@/components/layout/navbar';
-import { Footer } from '@/components/layout/footer';
+// import { Navbar } from '@/components/layout/navbar';
+// import { Footer } from '@/components/layout/footer';
 
 const loginSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -52,17 +52,17 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <Navbar />
+      {/* <Navbar /> */}
       <main className="flex flex-1">
         {/* Left Side - Form */}
         <div className="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:px-20 xl:px-24">
           <div className="mx-auto w-full max-w-sm">
             {/* Header */}
-            <Link href="/" className="flex items-center gap-2">
+            {/* <Link href="/" className="flex items-center gap-2">
               <span className="font-serif text-2xl font-bold text-foreground">
                 Ethio<span className="text-accent">Books</span>
               </span>
-            </Link>
+            </Link> */}
 
             <h1 className="mt-8 font-serif text-2xl font-bold text-foreground sm:text-3xl">
               Welcome back
@@ -81,7 +81,7 @@ export default function LoginPage() {
                   <Input
                     id="email"
                     type="email"
-                    placeholder="you@example.com"
+                    placeholder="Email"
                     className={cn(
                       'pl-10',
                       errors.email && 'border-destructive focus-visible:ring-destructive'
@@ -164,7 +164,7 @@ export default function LoginPage() {
         </div>
 
         {/* Right Side - Image */}
-        <div className="hidden lg:block lg:flex-1">
+        {/* <div className="hidden lg:block lg:flex-1">
           <div className="relative h-full">
             <img
               src="/images/login-books.jpg"
@@ -179,9 +179,9 @@ export default function LoginPage() {
               <p className="mt-4 text-muted-foreground">- George R.R. Martin</p>
             </div>
           </div>
-        </div>
+        </div> */}
       </main>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }

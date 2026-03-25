@@ -37,6 +37,6 @@ export async function logout(): Promise<{ success: boolean }> {
   return apiRequest<{ success: boolean }>('/auth/logout', { method: 'POST' });
 }
 
-export async function getMe(): Promise<{ user: any }> {
-  return apiRequest<{ user: any }>('/auth/me');
+export async function getMe(): Promise<{ user: User }> {
+  return apiRequest<{ user: User }>('/auth/me');
 }
