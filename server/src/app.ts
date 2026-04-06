@@ -16,10 +16,12 @@ app.use(helmet({
 }));
 
 app.use(cors({
-  origin: [env.FRONTEND_ORIGIN],
+  origin: [
+    'http://localhost:3000',
+    'https://ethiobook.netlify.app'
+  ],
   credentials: true,
 }));
-
 app.use(rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 300,
